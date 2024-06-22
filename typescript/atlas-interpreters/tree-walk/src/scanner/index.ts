@@ -8,13 +8,12 @@ export const Scanner = (source: string): Token[] => {
 
   while (!iter.done()) {
     const char = iter.get()
-    console.log('>>> char before', char, char.charAt(0))
     switch (char) {
       case '\r':
       case '\t':
       case '\n':
+      case '':
       case ' ': {
-        console.log('>>> inside space case')
         break
       }
       case '+': {
