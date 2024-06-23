@@ -11,9 +11,12 @@ export const Scanner = (source: string): Token[] => {
     switch (char) {
       case '\r':
       case '\t':
-      case '\n':
       case '':
       case ' ': {
+        break
+      }
+      case '\n': {
+        iter.newLine()
         break
       }
       case '+': {
@@ -25,11 +28,11 @@ export const Scanner = (source: string): Token[] => {
         break
       }
       case '/': {
-        tokens.push(getToken(TokenType.MINUS))
+        tokens.push(getToken(TokenType.SLASH))
         break
       }
       case '*': {
-        tokens.push(getToken(TokenType.MINUS))
+        tokens.push(getToken(TokenType.STAR))
         break
       }
       default: {
@@ -66,19 +69,18 @@ const createToken = (iter: IteratorReturnType, type: TokenType): Token => ({
 const number = (iter: IteratorReturnType): Token => {
   const { line, position } = iter.meta()
   let rawNumber = iter.get()
-  iter.next()
-  while (!iter.done() && iter.get() !== ' ') {
+  while (!iter.done() && !isEndOfExpression(iter.peek() ?? '')) {
+    iter.next()
     if (!isNumber(iter.get())) {
       return {
         type: TokenType.NUMBER,
         lexeme: rawNumber,
         line,
-        position,
+        position: iter.meta().position,
         hasError: true
       }
     }
     rawNumber += iter.get()
-    iter.next()
   }
 
   return {
@@ -93,4 +95,8 @@ const number = (iter: IteratorReturnType): Token => {
 const isNumber = (s: string) => {
   const n = Number(s)
   return !isNaN(n)
+}
+
+const isEndOfExpression = (c: string) => {
+  return c === ' ' || c === '\n' || c === '\t' || c === '\r' || c == ''
 }

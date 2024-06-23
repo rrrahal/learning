@@ -8,11 +8,6 @@ export const Iterator = (source: string): IteratorReturnType => {
     done: () => len < index,
     next: () => {
       index = index + 1
-      if (index < len && source[index] === '\n') {
-        line += 1
-        position = 0
-        index += 1
-      }
       position += 1
     },
     get: () => {
@@ -30,7 +25,11 @@ export const Iterator = (source: string): IteratorReturnType => {
     meta: () => ({
       line,
       position
-    })
+    }),
+    newLine: () => {
+      line += 1
+      position = -1
+    }
   }
 }
 
@@ -40,4 +39,5 @@ export type IteratorReturnType = {
   get: () => string
   peek: () => string | null
   meta: () => { line: number; position: number }
+  newLine: () => void
 }
