@@ -116,4 +116,58 @@ describe('Scanner', () => {
       )
     }
   })
+
+  it('should correctly tokenize multiple lines', () => {
+    const input = `1 + 1
+2 * 2`
+
+    const tokens = Scanner(input)
+
+    expect(tokens).toMatchInlineSnapshot(`
+      [
+        {
+          "hasError": false,
+          "lexeme": "1",
+          "line": 1,
+          "position": 0,
+          "type": "number",
+        },
+        {
+          "hasError": false,
+          "lexeme": "+",
+          "line": 1,
+          "position": 2,
+          "type": "plus",
+        },
+        {
+          "hasError": false,
+          "lexeme": "1",
+          "line": 1,
+          "position": 4,
+          "type": "number",
+        },
+        {
+          "hasError": false,
+          "lexeme": "2",
+          "line": 2,
+          "position": 0,
+          "type": "number",
+        },
+        {
+          "hasError": false,
+          "lexeme": "*",
+          "line": 2,
+          "position": 2,
+          "type": "STAR",
+        },
+        {
+          "hasError": false,
+          "lexeme": "2",
+          "line": 2,
+          "position": 4,
+          "type": "number",
+        },
+      ]
+    `)
+  })
 })
