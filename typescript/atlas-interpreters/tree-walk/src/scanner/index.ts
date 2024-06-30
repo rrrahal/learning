@@ -2,7 +2,7 @@ import { Token, TokenType } from '@src/types'
 import { Iterator, IteratorReturnType } from '@utils/iterator'
 
 export const Scanner = (source: string): Token[] => {
-  const iter = Iterator(source)
+  const iter = Iterator<string>(source)
   const tokens: Token[] = []
   const getToken = tokenCreator(iter)
 
@@ -55,10 +55,13 @@ export const Scanner = (source: string): Token[] => {
   return tokens
 }
 
-const tokenCreator = (iter: IteratorReturnType) => (type: TokenType) =>
+const tokenCreator = (iter: IteratorReturnType<string>) => (type: TokenType) =>
   createToken(iter, type)
 
-const createToken = (iter: IteratorReturnType, type: TokenType): Token => ({
+const createToken = (
+  iter: IteratorReturnType<string>,
+  type: TokenType
+): Token => ({
   type,
   lexeme: iter.get(),
   line: iter.meta().line,
@@ -66,7 +69,7 @@ const createToken = (iter: IteratorReturnType, type: TokenType): Token => ({
   hasError: false
 })
 
-const number = (iter: IteratorReturnType): Token => {
+const number = (iter: IteratorReturnType<string>): Token => {
   const { line, position } = iter.meta()
   let rawNumber = iter.get()
   while (!iter.done() && !isEndOfExpression(iter.peek() ?? '')) {
