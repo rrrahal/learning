@@ -28,18 +28,18 @@ const parseArgs = () => {
   const first_arg = args[2]
   if (first_arg === INTERPRETER_MODE.REPL) {
     repl()
+  } else {
+    readStaticExample()
   }
-
-  readStaticExample()
 }
 
 const repl = () => {
+  console.log('>>>')
   stdin.addListener('data', (data) => {
     const s = data.toString()
-    console.log(s)
 
     const tokens = Scanner(s)
-    console.log(tokens)
+    console.log('>>>', tokens)
   })
 }
 
