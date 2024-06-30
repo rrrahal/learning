@@ -1,11 +1,15 @@
-export const Iterator = (source: string): IteratorReturnType => {
+type IteratorSource<T> = T[] | string
+
+export const Iterator = <T>(
+  source: IteratorSource<T>
+): IteratorReturnType<T> => {
   const len = source.length
   let index = 0
   let line = 1
   let position = 0
 
   return {
-    done: () => len < index,
+    done: () => len <= index,
     next: () => {
       index = index + 1
       position += 1
@@ -33,11 +37,11 @@ export const Iterator = (source: string): IteratorReturnType => {
   }
 }
 
-export type IteratorReturnType = {
+export type IteratorReturnType<T> = {
   done: () => boolean
   next: () => void
-  get: () => string
-  peek: () => string | null
+  get: () => T | string
+  peek: () => T | null | string
   meta: () => { line: number; position: number }
   newLine: () => void
 }
