@@ -2,6 +2,8 @@ import fs from 'node:fs'
 import { stdin } from 'node:process'
 
 import { Scanner } from './scanner'
+import { Parser } from './parser'
+import { Interpreter } from './interpreter'
 //import { Parser } from './parser'
 const PATH_TO_EXAMPLES = '../../../atlas-lang/examples'
 
@@ -17,8 +19,9 @@ const readStaticExample = () => {
       return
     }
     const tokens = Scanner(data)
-    console.log(tokens)
-    // const AST = Parser(tokens)
+    const AST = Parser(tokens)
+    const result = Interpreter(AST)
+    console.log(result)
   })
 }
 
