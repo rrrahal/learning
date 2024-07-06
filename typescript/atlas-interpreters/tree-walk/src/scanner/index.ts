@@ -35,6 +35,14 @@ export const Scanner = (source: string): Token[] => {
         tokens.push(getToken(TokenType.STAR))
         break
       }
+      case '(': {
+        tokens.push(getToken(TokenType.OPEN_PARENTHESIS))
+        break
+      }
+      case ')': {
+        tokens.push(getToken(TokenType.CLOSE_PARENTHESIS))
+        break
+      }
       default: {
         if (isNumber(char)) {
           const token = number(iter)
@@ -101,5 +109,7 @@ const isNumber = (s: string) => {
 }
 
 const isEndOfExpression = (c: string) => {
-  return c === ' ' || c === '\n' || c === '\t' || c === '\r' || c == ''
+  return (
+    c === ' ' || c === '\n' || c === '\t' || c === '\r' || c == '' || c == ')'
+  )
 }

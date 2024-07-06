@@ -12,16 +12,18 @@ export type Token = {
 
 export enum TokenType {
   // Single Character Tokens
-  PLUS = 'plus',
-  MINUS = 'minus',
+  PLUS = 'PLUS',
+  MINUS = 'MINUS',
   STAR = 'STAR',
   SLASH = 'SLASH',
+  OPEN_PARENTHESIS = 'OPEN_PARENTHESIS',
+  CLOSE_PARENTHESIS = 'CLOSE_PARENTHESIS',
 
   // One or two characters tokens
-  GREATER = 'greater',
-  GREATER_THAN = 'greater_than',
-  LESS = 'less',
-  LESS_THAN = 'less_than',
+  GREATER = 'GREATER',
+  GREATER_THAN = 'GREATER_THAN',
+  LESS = 'LESS',
+  LESS_THAN = 'LESS_THAN',
 
   // Literals
   NUMBER = 'number'
