@@ -29,3 +29,12 @@ It aims to be simple and intuitive, making it easy to learn and experiment with 
 | Subtraction    | `-`    | Subtracts the second integer from the first                   | `5 - 3` |
 | Multiplication | `*`    | Multiplies two integers                                       | `5 * 3` |
 | Division       | `/`    | Divides the first integer by the second (truncates the value) | `6 / 3` |
+
+### Grouping Expressions
+
+Grouping expressions are used to control the order of operations within an expression. Parentheses `()` are used to group sub-expressions, ensuring they are evaluated first.
+
+| Operation | Symbol | Description                               | Example                    |
+| --------- | ------ | ----------------------------------------- | -------------------------- |
+| Grouping  | `()`   | Groups expressions to override precedence | `(5 + 3) * 2`              |
+|           |        |                                           | `true and (false or true)` |
