@@ -8,43 +8,61 @@
         Applies the transformer if option is fine (safely)
  */
 
-interface None {
-  tag: "None";
-}
+// The option type: it may contain a value
+export type Option<T> = { _tag: "Some"; value: T } | { _tag: "None" };
 
-interface Some<T> {
-  tag: "Some";
-  value: T;
-}
+export const Maybe = {
+  Some: <T>(value: T): Option<T> => {
+    return {
+      _tag: "Some",
+      value,
+    };
+  },
+  None: <T>(): Option<T> => {
+    return {
+      _tag: "None",
+    };
+  },
+  Bind: <T>(monad: Option<T>, transform: (op: T) => Option<T>): Option<T> => {
+    if (monad._tag === "None") {
+      return monad;
+    }
 
-type Option<T> = Some<T> | None;
-
-const some = <T>(value: T): Option<T> => ({
-  tag: "Some",
-  value,
-});
-
-const none = (): None => ({ tag: "None" });
-
-const optionWrapper = (v: any) => {
-  if (v === undefined) {
-    return none();
-  }
-
-  return some(v);
+    return transform(monad.value);
+  },
 };
 
-const run = <T>(
-  x: Option<T>,
-  transform: (_: Option<T>) => Option<T>
-): Option<T> => {
-  if (x === none()) {
-    return none();
-  }
+export type SecondOption<T> =
+  | {
+      _tag: "Some";
+      value: T;
+      bind: (fn: (monad: T) => T) => SecondOption<T>;
+    }
+  | {
+      _tag: "None";
+      bind: (fn: (monad: T) => T) => SecondOption<T>;
+    };
 
-  return transform(x);
+export const Some = <T>(value: T): SecondOption<T> => {
+  return {
+    _tag: "Some",
+    value,
+    bind: (fn) => {
+      try {
+        const transformed = fn(value);
+        return Some(transformed);
+      } catch (e) {
+        return None();
+      }
+    },
+  };
 };
 
-const v = some(1);
-
-console.log(run(v, (v) => some(v.value + 1)));
+export const None = <T>(): SecondOption<T> => {
+  return {
+    _tag: "None",
+    bind: () => {
+      return None();
+    },
+  };
+};
