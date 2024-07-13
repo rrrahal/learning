@@ -1,30 +1,43 @@
-import { ASTNode, NodeType, TermExp } from '@src/types'
-import { match, P } from 'ts-pattern'
+import {
+  ASTNode,
+  BinaryOp,
+  ExprNode,
+  LiteralNode,
+  NodeType,
+  TokenType
+} from '@src/types'
+import { match } from 'ts-pattern'
 
 export const Interpreter = (AST: ASTNode[]) => {
   const values = AST.map((node) => interpret(node))
   return values
 }
 
-const interpret = (node: ASTNode): number | null => {
+const interpret = (node: ASTNode): number => {
   return match(node)
-    .with({ type: NodeType.EOF }, () => null)
-    .with({ type: NodeType.ExprNode }, (node) => expression(node.node))
-    .with({ type: NodeType.ArithOp }, (node) => arithOp(node.node))
-    .exhaustive()
+    .with({ type: NodeType.BinaryOp }, (n) => binaryOp(n as BinaryOp))
+    .with({ type: NodeType.LiteralNode }, (n) => literal(n as LiteralNode))
+    .with({ type: NodeType.ExprNode }, (n: ExprNode) => interpret(n.expression))
+    .otherwise(() => {
+      console.log('>>> at node', node)
+      throw new Error('Failed to interpret: unsupported node')
+    })
 }
 
-const expression = (node: TermExp) => {
-  return match(node)
-    .with(P.any, (node) => arithOp(node))
-    .exhaustive()
-}
-
-const arithOp = (node: TermExp) => {
-  const left = node.left.value
-  const right = node.right.value
+const binaryOp = (node: BinaryOp) => {
+  const left = interpret(node.left)
+  const right = interpret(node.right)
 
   return match(node.operator)
-    .with('+', () => left + right)
-    .exhaustive()
+    .with(TokenType.PLUS, () => left + right)
+    .with(TokenType.MINUS, () => left - right)
+    .with(TokenType.STAR, () => left * right)
+    .with(TokenType.SLASH, () => left / right)
+    .otherwise(() => {
+      throw new Error('Failed to execute binary op')
+    })
+}
+
+const literal = (node: LiteralNode) => {
+  return Number(node.token.lexeme)
 }

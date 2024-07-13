@@ -3,31 +3,60 @@
  * This is supposed to be an 1:1 mapping of the context-free grammar
  */
 
-export type ASTNode = ExprNode | EOF
+import { Token, TokenType } from '../tokens'
 
-type arithOperators = '+'
+/*
+ * Context Free Grammar for the Atlas syntax
+ * ASTNode -> ExprNode | EOF  // Either an expression or the end of file, still don't have statements
+ * ExprNode -> IntegerExpression
+ * IntegerExpression -> IntegerTerm { ("+" | "-") IntegerTerm }
+ * IntegerTerm -> IntegerFactor { ("*" | "/") IntegerFactor }
+ * IntegerFactor -> NumberNode | "(" ExprNode ")"
+ * NumberNode -> number
+ */
+
+/*
+ *  1 + 1 -> ExprNode ->      BinaryOp
+ *                    LiteralNode  Literal Node
+ */
+
+export type ASTTree = ASTNode[]
 
 export enum NodeType {
-  ExprNode = 'EXPRESSION',
-  EOF = 'EOF',
-  ArithOp = 'ArithOp'
+  ExprNode = 'ExprNode',
+  IntegerExpr = 'IntegerExpr',
+  IntegerTerm = 'IntegerTerm',
+  BinaryOp = 'BinaryOP',
+  IntegerFactor = 'IntegerFactor',
+  LiteralNode = 'LiteralNode',
+  NumberNode = 'NumberNode',
+  EOF = 'EOF'
 }
 
-export type ExprNode = {
+export interface ASTNode {
   type: NodeType
-  node: TermExp
 }
 
-export type TermExp = {
-  right: LiteralNode
-  left: LiteralNode
-  operator: arithOperators
-}
-
-export type LiteralNode = {
-  value: number
-}
-
-export type EOF = {
+export interface EOFNode {
   type: NodeType.EOF
+}
+
+export interface ExprNode extends ASTNode {
+  type: NodeType.ExprNode
+  expression: EOFNode | BinaryOp | ExprNode | LiteralNode
+}
+
+export interface BinaryOp extends ASTNode {
+  type: NodeType.BinaryOp
+  left: ExprNode | LiteralNode
+  right: ExprNode | LiteralNode
+  // FIXME: Type narrowing here too
+  operator: TokenType
+}
+
+// Fix ME: type narrowing here
+export interface LiteralNode extends ASTNode {
+  type: NodeType
+  // TODO: Type narrowing here: Only Numbers for now
+  token: Token
 }

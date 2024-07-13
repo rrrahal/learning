@@ -1,4 +1,7 @@
-type IteratorSource<T> = T[] | string
+interface IteratorSource<T> {
+  [index: number]: T
+  length: number
+}
 
 export const Iterator = <T>(
   source: IteratorSource<T>
@@ -18,7 +21,7 @@ export const Iterator = <T>(
       if (index < len) {
         return source[index]
       }
-      return ''
+      throw new Error(`Fail trying to get on done iterator`)
     },
     peek: () => {
       if (index + 1 < len) {
@@ -40,8 +43,8 @@ export const Iterator = <T>(
 export type IteratorReturnType<T> = {
   done: () => boolean
   next: () => void
-  get: () => T | string
-  peek: () => T | null | string
+  get: () => T
+  peek: () => T | null
   meta: () => { line: number; position: number }
   newLine: () => void
 }

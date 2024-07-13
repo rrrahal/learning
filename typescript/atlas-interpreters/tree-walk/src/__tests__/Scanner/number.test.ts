@@ -20,7 +20,7 @@ describe('Scanner', () => {
           "lexeme": "+",
           "line": 1,
           "position": 2,
-          "type": "plus",
+          "type": "PLUS",
         },
         {
           "hasError": false,
@@ -78,14 +78,14 @@ describe('Scanner', () => {
           "lexeme": "+",
           "line": 1,
           "position": 0,
-          "type": "plus",
+          "type": "PLUS",
         },
         {
           "hasError": false,
           "lexeme": "-",
           "line": 1,
           "position": 2,
-          "type": "minus",
+          "type": "MINUS",
         },
         {
           "hasError": false,
@@ -137,7 +137,7 @@ describe('Scanner', () => {
           "lexeme": "+",
           "line": 1,
           "position": 2,
-          "type": "plus",
+          "type": "PLUS",
         },
         {
           "hasError": false,
