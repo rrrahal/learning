@@ -37,23 +37,44 @@ export const Parser = (tokens: Token[]): ASTTree => {
   return ast
 }
 
-const ParseExpr = (iter: tokenIterator): ASTNode => {
+const ParseExpr = (iter: tokenIterator): ExprNode => {
   if (iter.done()) {
     throw new Error('Failed to parse, unexpected token')
   }
+
   const currentToken = iter.get()
   const lookahead = iter.peek()
 
-  return match(lookahead)
-    .with({ type: TokenType.MINUS }, { type: TokenType.PLUS }, () => {
-      return binaryOp(iter)
-    })
+  // FIXME: Maybe lookahead should be EOF and deal with it inside the match
+  if (lookahead === null) {
+    return {
+      type: NodeType.ExprNode,
+      expression: ParseToken(currentToken)
+    }
+  }
+
+  const expression = match(lookahead)
+    .with(
+      { type: TokenType.MINUS },
+      { type: TokenType.PLUS },
+      { type: TokenType.SLASH },
+      { type: TokenType.STAR },
+      () => {
+        return binaryOp(iter)
+      }
+    )
+    .with({ type: TokenType.NUMBER }, (t) => ParseToken(t))
     .with(P._, () => {
       throw new Error(
-        `Failed to parse expression at ${currentToken.line} pos: ${currentToken.position}`
+        `Failed to parse expression ${currentToken.type} at ${currentToken.line} pos: ${currentToken.position}`
       )
     })
     .exhaustive()
+
+  return {
+    type: NodeType.ExprNode,
+    expression
+  }
 }
 
 const ParseToken = (token: Token): ExprNode => {
@@ -84,13 +105,10 @@ const binaryOp = (iter: tokenIterator): BinaryOp => {
   const operator = iter.get()
   iter.next()
 
-  const right = iter.get()
-  iter.next()
-
   return {
     type: NodeType.BinaryOp,
     left: ParseToken(left),
-    right: ParseToken(right),
+    right: ParseExpr(iter),
     operator: match(operator)
       .with({ type: P.when(isBinaryOP) }, (opType) => opType.type)
       .otherwise(() => {

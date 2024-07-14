@@ -49,7 +49,7 @@ export interface ExprNode extends ASTNode {
 export interface BinaryOp extends ASTNode {
   type: NodeType.BinaryOp
   left: ExprNode | LiteralNode
-  right: ExprNode | LiteralNode
+  right: ExprNode
   // FIXME: Type narrowing here too
   operator: TokenType
 }
