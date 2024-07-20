@@ -58,5 +58,6 @@ export interface BinaryOp extends ASTNode {
 export interface LiteralNode extends ASTNode {
   type: NodeType
   // TODO: Type narrowing here: Only Numbers for now
+  // TODO: This should be the value already and not the token maybe?
   token: Token
 }

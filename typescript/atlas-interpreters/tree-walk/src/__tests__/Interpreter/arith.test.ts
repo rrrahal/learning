@@ -48,4 +48,20 @@ describe('The interpreter for arith operations', () => {
 
     expect(result[0]).toBe(4)
   })
+
+  it('correctly handles the operator precedence on complex more math', () => {
+    const sourceCode = '4 * 4 + 1'
+
+    const result = runInterpreter(sourceCode)
+
+    expect(result[0]).toBe(17)
+  })
+
+  it('correctly handles the operator precedence on complex more math', () => {
+    const sourceCode = '4 + 4 + 1 * 10'
+
+    const result = runInterpreter(sourceCode)
+
+    expect(result[0]).toBe(18)
+  })
 })

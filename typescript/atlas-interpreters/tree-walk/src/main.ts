@@ -2,9 +2,9 @@ import fs from 'node:fs'
 import { stdin } from 'node:process'
 
 import { Scanner } from './scanner'
-import { Parser } from './parser'
+import { Parser } from './parser/pratt-parser'
 import { Interpreter } from './interpreter'
-//import { Parser } from './parser'
+
 const PATH_TO_EXAMPLES = '../../../atlas-lang/examples'
 
 enum INTERPRETER_MODE {
@@ -42,7 +42,9 @@ const repl = () => {
     const s = data.toString()
 
     const tokens = Scanner(s)
-    console.log('>>>', tokens)
+    const AST = Parser(tokens)
+    const result = Interpreter(AST)
+    console.log('>>> result', result)
   })
 }
 
