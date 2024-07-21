@@ -39,18 +39,24 @@ export const Parser = (tokens: Token[]): ASTTree => {
   return ast
 }
 
-// TODO: there is no concept of left here, rename everything
 const parseExpr = (parser: prattType, bindingPower: number) => {
   // TODO: maybe this could throw!
-  const leftToken = parser.currentToken()
+  const currentToken = parser.currentToken()
 
-  const leftHandler = nud_lookup(leftToken.type)
+  const nud_handler = nud_lookup(currentToken.type)
 
-  if (!leftHandler) {
-    throw new Error(`Failed to parse Expression ${leftToken.type}`)
+  // This should be a token that does not expect anything to the left
+  // E.g: A number
+  if (!nud_handler) {
+    throw new Error(`Failed to parse Expression ${currentToken.type}`)
   }
 
-  let leftNode = leftHandler(parser)
+  // Return the node corresponding to the node and advances the parser
+  let node = nud_handler(parser)
+
+  // If my next token has bigger precedence: I have to keep parsing
+  // because I'm not sure if I reached a "Top Level Node"
+  // Eg: 1 + 2 * 3 (when I reach * I need to keep parsing because * binds more than +)
   while (
     parser.hasTokens() &&
     bp_lookup(parser.currentToken().type) > bindingPower
@@ -64,14 +70,17 @@ const parseExpr = (parser: prattType, bindingPower: number) => {
     }
 
     // TODO: either rename this to handler or rename left handler
-    leftNode = led_fn(parser, leftNode, bp_lookup(parser.currentToken().type))
+    node = led_fn(parser, node, bp_lookup(parser.currentToken().type))
   }
 
-  return leftNode
+  return node
 }
 
-/* Handlers
-  They parse the current token and advance the parser to the next token
+/*
+ *  Primary Expr Handler
+ *  Return the literal that represents primary data structures
+ *  It also advances the parser
+ *  E.g: numbers, booleans, identifiers, etc
  */
 
 export const parsePrimaryExpr = (parser: prattType): ExprNode => {
@@ -92,6 +101,12 @@ export const parsePrimaryExpr = (parser: prattType): ExprNode => {
       throw new Error(`Cannot parse primary Expr ${token}`)
     })
 }
+
+/*
+ *  Binary Expression Handler
+ *  Given a parser and a left node it parses the expression
+ *  It also advances the parser
+ * */
 
 export const parseBinaryExpr = (
   parser: prattType,
@@ -114,9 +129,16 @@ export const parseBinaryExpr = (
   }
 }
 
+/*
+ * Grouping Expression Handler
+ * It parses a group "(expr)"
+ * It also skips the closing parenthesis
+ */
+
 export const parseGroupingExpr = (parser: prattType): ExprNode => {
   // Skip the open parenthesis token
   parser.advance()
+  // Resets the binding power
   const expr = parseExpr(parser, 0)
 
   if (
@@ -127,13 +149,10 @@ export const parseGroupingExpr = (parser: prattType): ExprNode => {
       `Expecting closing parenthesis, found ${parser.currentToken().type}`
     )
   }
-
-  // Skip the closing parenthesis
   parser.advance()
 
   return {
     type: NodeType.ExprNode,
-    // reset the binding power
     expression: expr
   }
 }
