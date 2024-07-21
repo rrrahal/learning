@@ -39,6 +39,7 @@ export const Parser = (tokens: Token[]): ASTTree => {
   return ast
 }
 
+// TODO: there is no concept of left here, rename everything
 const parseExpr = (parser: prattType, bindingPower: number) => {
   // TODO: maybe this could throw!
   const leftToken = parser.currentToken()
@@ -46,7 +47,7 @@ const parseExpr = (parser: prattType, bindingPower: number) => {
   const leftHandler = nud_lookup(leftToken.type)
 
   if (!leftHandler) {
-    throw new Error(`Failed to parse Expression ${leftToken}`)
+    throw new Error(`Failed to parse Expression ${leftToken.type}`)
   }
 
   let leftNode = leftHandler(parser)
@@ -62,6 +63,7 @@ const parseExpr = (parser: prattType, bindingPower: number) => {
       throw new Error(`Failed to parse expression ${tokenKind}`)
     }
 
+    // TODO: either rename this to handler or rename left handler
     leftNode = led_fn(parser, leftNode, bp_lookup(parser.currentToken().type))
   }
 
@@ -109,5 +111,29 @@ export const parseBinaryExpr = (
   return {
     type: NodeType.ExprNode,
     expression: binaryExpr
+  }
+}
+
+export const parseGroupingExpr = (parser: prattType): ExprNode => {
+  // Skip the open parenthesis token
+  parser.advance()
+  const expr = parseExpr(parser, 0)
+
+  if (
+    !parser.hasTokens() ||
+    parser.currentToken().type !== TokenType.CLOSE_PARENTHESIS
+  ) {
+    throw new Error(
+      `Expecting closing parenthesis, found ${parser.currentToken().type}`
+    )
+  }
+
+  // Skip the closing parenthesis
+  parser.advance()
+
+  return {
+    type: NodeType.ExprNode,
+    // reset the binding power
+    expression: expr
   }
 }
