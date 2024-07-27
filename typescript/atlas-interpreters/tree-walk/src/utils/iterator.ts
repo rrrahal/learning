@@ -3,9 +3,9 @@ interface IteratorSource<T> {
   length: number
 }
 
-export const Iterator = <T>(
-  source: IteratorSource<T>
-): IteratorReturnType<T> => {
+export type IteratorReturnType<T> = ReturnType<typeof Iterator<T>>
+
+export const Iterator = <T>(source: IteratorSource<T>) => {
   const len = source.length
   let index = 0
   let line = 1
@@ -36,15 +36,18 @@ export const Iterator = <T>(
     newLine: () => {
       line += 1
       position = -1
+    },
+    match: (guard: IteratorSource<T>): boolean => {
+      let i = 0
+      while (i < guard.length) {
+        if (i >= len) {
+          return false
+        }
+        if (guard[i] !== source[index + i]) {
+          return false
+        }
+      }
+      return true
     }
   }
-}
-
-export type IteratorReturnType<T> = {
-  done: () => boolean
-  next: () => void
-  get: () => T
-  peek: () => T | null
-  meta: () => { line: number; position: number }
-  newLine: () => void
 }

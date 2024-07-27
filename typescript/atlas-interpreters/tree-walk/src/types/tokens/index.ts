@@ -26,7 +26,8 @@ export enum TokenType {
   LESS_THAN = 'LESS_THAN',
 
   // Literals
-  NUMBER = 'number'
+  NUMBER = 'number',
+  BOOLEAN = 'boolean'
 
   // Keywords
 }

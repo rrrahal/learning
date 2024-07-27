@@ -43,6 +43,18 @@ export const Scanner = (source: string): Token[] => {
         tokens.push(getToken(TokenType.CLOSE_PARENTHESIS))
         break
       }
+      case 't': {
+        if (iter.match('true')) {
+          tokens.push(getBoolean(iter))
+          break
+        }
+      }
+      case 'f': {
+        if (iter.match('false')) {
+          tokens.push(getBoolean(iter))
+          break
+        }
+      }
       default: {
         if (isNumber(char)) {
           const token = number(iter)
@@ -112,4 +124,35 @@ const isEndOfExpression = (c: string) => {
   return (
     c === ' ' || c === '\n' || c === '\t' || c === '\r' || c == '' || c == ')'
   )
+}
+
+const getBoolean = (iter: IteratorReturnType<string>): Token => {
+  if (iter.get() === 't') {
+    const { line, position } = iter.meta()
+    iter.next()
+    iter.next()
+    iter.next()
+    iter.next()
+    return {
+      type: TokenType.BOOLEAN,
+      lexeme: 'true',
+      line,
+      position,
+      hasError: false
+    }
+  } else {
+    const { line, position } = iter.meta()
+    iter.next()
+    iter.next()
+    iter.next()
+    iter.next()
+    iter.next()
+    return {
+      type: TokenType.BOOLEAN,
+      lexeme: 'false',
+      line,
+      position,
+      hasError: false
+    }
+  }
 }
