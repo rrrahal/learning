@@ -30,6 +30,7 @@ export enum NodeType {
   IntegerFactor = 'IntegerFactor',
   LiteralNode = 'LiteralNode',
   NumberNode = 'NumberNode',
+  BooleanNode = 'BooleanNode',
   EOF = 'EOF'
 }
 

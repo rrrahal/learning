@@ -6,6 +6,33 @@ describe('Scanner', () => {
 
     const tokens = Scanner(input)
 
-    expect(tokens).toMatchInlineSnapshot()
+    expect(tokens).toMatchInlineSnapshot(`
+      [
+        {
+          "hasError": false,
+          "lexeme": "true",
+          "line": 1,
+          "position": 0,
+          "type": "boolean",
+        },
+      ]
+    `)
+  })
+  it('should scan a simple false token', () => {
+    const input = 'false'
+
+    const tokens = Scanner(input)
+
+    expect(tokens).toMatchInlineSnapshot(`
+      [
+        {
+          "hasError": false,
+          "lexeme": "false",
+          "line": 1,
+          "position": 0,
+          "type": "boolean",
+        },
+      ]
+    `)
   })
 })

@@ -46,6 +46,7 @@ export const Iterator = <T>(source: IteratorSource<T>) => {
         if (guard[i] !== source[index + i]) {
           return false
         }
+        i += 1
       }
       return true
     }

@@ -97,6 +97,17 @@ export const parsePrimaryExpr = (parser: prattType): ExprNode => {
         expression: literal
       }
     })
+    .with(TokenType.BOOLEAN, () => {
+      const literal = {
+        type: NodeType.LiteralNode,
+        token
+      } as LiteralNode
+
+      return {
+        type: NodeType.ExprNode as NodeType.ExprNode,
+        expression: literal
+      }
+    })
     .otherwise(() => {
       throw new Error(`Cannot parse primary Expr ${token}`)
     })

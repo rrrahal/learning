@@ -46,14 +46,16 @@ export const Scanner = (source: string): Token[] => {
       case 't': {
         if (iter.match('true')) {
           tokens.push(getBoolean(iter))
-          break
         }
+        // TODO: This is an identifier
+        break
       }
       case 'f': {
         if (iter.match('false')) {
           tokens.push(getBoolean(iter))
-          break
         }
+        // TODO: this is an identifier
+        break
       }
       default: {
         if (isNumber(char)) {
