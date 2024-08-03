@@ -57,6 +57,20 @@ export const Scanner = (source: string): Token[] => {
         // TODO: this is an identifier
         break
       }
+      case 'A': {
+        if (iter.match('AND')) {
+          tokens.push(getLogical(iter))
+        }
+        // TODO: This is an identifier
+        break
+      }
+      case 'O': {
+        if (iter.match('OR')) {
+          tokens.push(getLogical(iter))
+        }
+        // TODO: this is an OR expression
+        break
+      }
       default: {
         if (isNumber(char)) {
           const token = number(iter)
@@ -156,5 +170,33 @@ const getBoolean = (iter: IteratorReturnType<string>): Token => {
       position,
       hasError: false
     }
+  }
+}
+
+const getLogical = (iter: IteratorReturnType<string>): Token => {
+  const { line, position } = iter.meta()
+  if (iter.get() === 'A') {
+    iter.next()
+    iter.next()
+    iter.next()
+
+    return {
+      type: TokenType.AND_OPERATOR,
+      lexeme: 'and',
+      line,
+      position,
+      hasError: false
+    }
+  }
+
+  iter.next()
+  iter.next()
+
+  return {
+    type: TokenType.OR_OPERATOR,
+    lexeme: 'OR',
+    line,
+    position,
+    hasError: false
   }
 }

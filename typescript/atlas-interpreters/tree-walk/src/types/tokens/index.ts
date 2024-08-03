@@ -27,7 +27,9 @@ export enum TokenType {
 
   // Literals
   NUMBER = 'number',
-  BOOLEAN = 'boolean'
+  BOOLEAN = 'boolean',
 
   // Keywords
+  OR_OPERATOR = 'OR',
+  AND_OPERATOR = 'AND'
 }

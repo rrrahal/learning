@@ -24,6 +24,11 @@ export const bp_lookup = (type: TokenType): number | never => {
     .with(TokenType.PLUS, TokenType.MINUS, () => bindingPower.ADDITIVE)
     .with(TokenType.SLASH, TokenType.STAR, () => bindingPower.MULTIPLICATIVE)
     .with(TokenType.NUMBER, TokenType.BOOLEAN, () => bindingPower.PRIMARY)
+    .with(
+      TokenType.AND_OPERATOR,
+      TokenType.OR_OPERATOR,
+      () => bindingPower.LOGICAL
+    )
     .otherwise(() => {
       throw new Error(`Failed to get binding power of TokenType: ${type}`)
     })
@@ -44,6 +49,8 @@ export const led_lookup = (type: TokenType) => {
       TokenType.MINUS,
       TokenType.STAR,
       TokenType.SLASH,
+      TokenType.OR_OPERATOR,
+      TokenType.AND_OPERATOR,
       () => parseBinaryExpr
     )
     .otherwise(() => undefined)
