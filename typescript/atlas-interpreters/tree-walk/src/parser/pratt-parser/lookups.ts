@@ -1,7 +1,11 @@
 import { TokenType } from '@src/types/tokens'
 import { match } from 'ts-pattern'
 
-import { parseBinaryExpr, parsePrimaryExpr, parseGroupingExpr } from './index'
+import {
+  parseBinaryExpr,
+  parsePrimaryExpr,
+  parseGroupingExpr
+} from './expressions'
 
 export enum bindingPower {
   DEFAULT = 0,
