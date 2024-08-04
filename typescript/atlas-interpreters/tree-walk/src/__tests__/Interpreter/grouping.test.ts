@@ -25,4 +25,12 @@ describe('The interpreter for grouping operations', () => {
 
     expect(result[0]).toBe(24)
   })
+
+  it('correctly handles grouping boolean operators', () => {
+    const sourceCode = '(true AND false) OR (false OR true)'
+
+    const result = runInterpreter(sourceCode)
+
+    expect(result[0]).toBe(true)
+  })
 })

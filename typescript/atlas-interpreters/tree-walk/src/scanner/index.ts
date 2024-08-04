@@ -148,7 +148,6 @@ const getBoolean = (iter: IteratorReturnType<string>): Token => {
     iter.next()
     iter.next()
     iter.next()
-    iter.next()
     return {
       type: TokenType.BOOLEAN,
       lexeme: 'true',
@@ -158,7 +157,6 @@ const getBoolean = (iter: IteratorReturnType<string>): Token => {
     }
   } else {
     const { line, position } = iter.meta()
-    iter.next()
     iter.next()
     iter.next()
     iter.next()
@@ -178,7 +176,6 @@ const getLogical = (iter: IteratorReturnType<string>): Token => {
   if (iter.get() === 'A') {
     iter.next()
     iter.next()
-    iter.next()
 
     return {
       type: TokenType.AND_OPERATOR,
@@ -190,11 +187,10 @@ const getLogical = (iter: IteratorReturnType<string>): Token => {
   }
 
   iter.next()
-  iter.next()
 
   return {
     type: TokenType.OR_OPERATOR,
-    lexeme: 'OR',
+    lexeme: 'or',
     line,
     position,
     hasError: false
