@@ -21,3 +21,5 @@ ds_and_algo-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+.elixir_tools/
