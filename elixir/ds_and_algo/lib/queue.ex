@@ -1,4 +1,5 @@
 defmodule Queue do
+  # we could also use reverse but I want to see how to store values inside a module :thinking
   defstruct items: [], size: 0
 
   def new() do
